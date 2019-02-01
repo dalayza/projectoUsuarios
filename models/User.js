@@ -31,7 +31,7 @@ class User {
     get country() {
         return this._country;
     }
-    
+
     get email() {
         return this._country;
     }
@@ -56,6 +56,21 @@ class User {
     // consulta
     set photo(value) {
         this._photo = value;
+    }
+
+
+    // recibir los datos
+    loadFromJSON(json) {
+        for (let name in json) {
+
+            switch (name){
+                case '_register':
+                    this[name] = new Date(json[name]);
+                    break;
+                default:
+                    this[name] = json[name];
+            }
+        }
     }
 
 }

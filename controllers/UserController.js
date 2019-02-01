@@ -8,6 +8,7 @@ class UserController {
 
         this.onSubmit();
         this.onEdit();
+        this.selectAll();
 
     }
 
@@ -24,11 +25,11 @@ class UserController {
 
             event.preventDefault();
 
-            let btn = this.formEl.querySelector("[type=submit]");
+            let btn = this.formUpdateEl.querySelector("[type=submit]");
 
             btn.disabled = true;
 
-            let values = this.getValues(this.formIdUpdateEl);  // retorna todos los datos del usuario
+            let values = this.getValues(this.formUpdateEl);  // retorna todos los datos del usuario
 
             let index = this.formUpdateEl.dataset.trIndex; // tomo el usuario que quiero actualizar
 
@@ -49,23 +50,11 @@ class UserController {
                         result._photo = content;
                     }
 
-                    tr.dataset.user = JSON.stringify(result); // stringify: transforma JSON en string
+                    let user = new User();
 
-                    tr.innerHTML = ` // actualizo la informacion del usuario
-                        <td>
-                            <img src="${result._photo}" alt="User Image" class="img-circle img-sm">
-                        </td>
-                        <td>${result._name}</td>
-                        <td>${result._email}</td>
-                        <td>${(result._admin) ? 'Sim' : 'Não'}</td>
-                        <td>${Utils.dateFormat(result._register)}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-edit btn-xs btn-flat">Editar</button>
-                            <button type="button" class="btn btn-danger btn-xs btn-flat">Excluir</button>
-                        </td>
-                    `;
-        
-                    this.addEventsTR(tr);
+                    user.loadFromJSON(result);
+
+                    this.getTr(user, tr);
         
                     this.updateCount();
 
@@ -106,6 +95,8 @@ class UserController {
                 (content) => {  // Promise
 
                     values.photo = content;
+
+                    this.insert(values); // insertar en el sessionStorage
 
                     this.addLine(values);
 
@@ -215,9 +206,67 @@ class UserController {
 
     }
 
+
+    getUsersStorage() {
+
+        let users = [];
+
+        if (localStorage.getItem("users")) {
+
+            users = JSON.parse(localStorage.getItem("users"));
+
+        }
+
+        return users;
+
+    }
+
+
+
+    selectAll() {
+
+        let users = this.getUsersStorage();
+
+        users.forEach(dataUser => {
+
+            let user  = new User();
+
+            user.loadFromJSON(dataUser);
+
+            this.addLine(user);
+
+        });
+
+    }
+
+
+
+    insert(data) {
+
+        let users = this.getUsersStorage();
+
+        users.push(data);
+
+        //sessionStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("users", JSON.stringify(users)); // llave, valor
+
+    }
+
+
     addLine(dataUser) {   // dataUser = user
+
+        let tr = this.getTr(dataUser);
+
+        this.tableEl.appendChild(tr); // adiciona el tr dentro de la tabla
+
+        this.updateCount();
+        
+    }
+
+
+    getTr(dataUser, tr = null) { // si tr no pasa es nulo
     
-        let tr = document.createElement('tr');
+        if (tr === null) tr = document.createElement('tr');
 
         tr.dataset.user = JSON.stringify(dataUser); // serializar: convierte el objeto en su atributo inicial (array)
     
@@ -234,13 +283,11 @@ class UserController {
                 <button type="button" class="btn btn-danger btn-delete btn-xs btn-flat">Excluir</button>
             </td>
         `;
-
+        
         this.addEventsTR(tr);
 
-        this.tableEl.appendChild(tr); 
+        return tr;    
 
-        this.updateCount();
-        
     }
 
 
