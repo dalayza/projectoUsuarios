@@ -301,6 +301,12 @@ class UserController {
 
             if (confirm("Deseja realmente exluir?")) {
 
+                let user = new User();
+
+                user.loadFromJSON(JSON.pasrse(tr.dataset.User));
+
+                user.remove();
+
                 tr.remove();
 
                 this.updateCount();

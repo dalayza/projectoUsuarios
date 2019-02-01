@@ -97,16 +97,21 @@ class User {
 
     getNewID() {
 
-        if (!window.id) window.id = 0;
+        let usersID = parseInt(localStorage.getItem("userID")); // se elimino un item del localStorage, el muda su id
 
-        id++;
+        if (!usersID > 0) usersID = 0;
 
-        return id;
+        usersID++;
+
+        localStorage.setItem("usersID", usersID); // guardar el ultimo id que generamos
+
+        return usersID;
 
     }
 
 
     save() {
+
         let users = User.getUsersStorage();
 
         if (this.Id > 0) { // llave unica para identificar usuario
@@ -130,6 +135,26 @@ class User {
             users.push(this);
 
         }
+
+        //sessionStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("users", JSON.stringify(users)); // llave, valor
+
+    }
+
+
+    remove() {
+        
+        let users = User.getUsersStorage();
+
+        users.foreEach((userData, index) => {
+
+            if (this._id == userData._id) {
+
+                users.splice(index, 1); // remover un item del array de localStorage
+
+            }
+
+        });
 
         //sessionStorage.setItem("users", JSON.stringify(users));
         localStorage.setItem("users", JSON.stringify(users)); // llave, valor
