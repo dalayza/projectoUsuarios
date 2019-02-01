@@ -113,9 +113,9 @@ class User {
 
             users.map(u => { // retorna los datos del item en el array
 
-                if (u._id === this.id) {
+                if (u._id == this.id) {
 
-                    u = this;
+                    Object.assign(u, this);
 
                 }
                 
@@ -133,7 +133,7 @@ class User {
 
         //sessionStorage.setItem("users", JSON.stringify(users));
         localStorage.setItem("users", JSON.stringify(users)); // llave, valor
-        
+
     }
 
 }
