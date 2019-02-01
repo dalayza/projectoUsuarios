@@ -2,6 +2,7 @@ class User {
 
     constructor(name, gender, birth, country, email, password, photo, admin){
 
+        this._id;
         this._name = name;
         this._gender = gender;
         this._birth = birth;
@@ -16,6 +17,10 @@ class User {
 
     // propiedades privadas
     // CRUD
+    get id() {
+        return this._id;
+    }
+
     get name() {
         return this._name;
     }
@@ -71,6 +76,64 @@ class User {
                     this[name] = json[name];
             }
         }
+    }
+
+
+    // editando informacion del localStorage
+    static getUsersStorage() {
+
+        let users = [];
+
+        if (localStorage.getItem("users")) {
+
+            users = JSON.parse(localStorage.getItem("users"));
+
+        }
+
+        return users;
+
+    }
+
+
+    getNewID() {
+
+        if (!window.id) window.id = 0;
+
+        id++;
+
+        return id;
+
+    }
+
+
+    save() {
+        let users = User.getUsersStorage();
+
+        if (this.Id > 0) { // llave unica para identificar usuario
+
+            users.map(u => { // retorna los datos del item en el array
+
+                if (u._id === this.id) {
+
+                    u = this;
+
+                }
+                
+                return u;
+
+            });
+
+        } else {
+
+            this._id = this.getNewID();
+
+            users.push(this);
+
+        }
+
+        //sessionStorage.setItem("users", JSON.stringify(users));
+        localStorage.setItem("users", JSON.stringify(users)); // llave, valor
+        
     }
 
 }

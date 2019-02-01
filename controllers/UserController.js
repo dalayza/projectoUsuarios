@@ -37,7 +37,7 @@ class UserController {
 
             let userOld = JSON.parse(tr.dataset.user); // verificar si esta modificando la imagen
 
-            let result = Object.assign({}, userOld, values); // sistituye la imagen
+            let result = Object.assign({}, userOld, values); // sistituye la imagen, assign perdio la instancia
 
             this.showPanelCreate(); 
 
@@ -53,6 +53,8 @@ class UserController {
                     let user = new User();
 
                     user.loadFromJSON(result);
+
+                    user.save();
 
                     this.getTr(user, tr);
         
@@ -96,7 +98,7 @@ class UserController {
 
                     values.photo = content;
 
-                    this.insert(values); // insertar en el sessionStorage
+                    values.save();
 
                     this.addLine(values);
 
@@ -222,7 +224,6 @@ class UserController {
     }
 
 
-
     selectAll() {
 
         let users = this.getUsersStorage();
@@ -236,19 +237,6 @@ class UserController {
             this.addLine(user);
 
         });
-
-    }
-
-
-
-    insert(data) {
-
-        let users = this.getUsersStorage();
-
-        users.push(data);
-
-        //sessionStorage.setItem("users", JSON.stringify(users));
-        localStorage.setItem("users", JSON.stringify(users)); // llave, valor
 
     }
 
