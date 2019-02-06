@@ -199,8 +199,8 @@ class UserController {
             user.name, 
             user.gender, 
             user.birth, 
-            user.country, 
             user.email, 
+            user.country, 
             user.password, 
             user.photo, 
             user.admin
